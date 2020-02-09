@@ -1,0 +1,19 @@
+{
+    "name": "naveed/game-of-life",
+    "description": "Conway's game of life implementation in PHP",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Naveed Khan",
+            "email": "naveed@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "GameOfLife\\": "src/"
+        }
+    },
+    "require": {
+    }
+}
