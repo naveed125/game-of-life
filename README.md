@@ -1,4 +1,4 @@
-# game-of-life
+# Conway's Game of Life in PHP
 Conway's Game of Life implementation in PHP. Uses a sparse matrix to keep a list of alive cells. Read more about the game of life at [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
 ### Example Oscillator
