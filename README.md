@@ -3,32 +3,31 @@ Conway's Game of Life implementation in PHP. Uses a sparse matrix to keep a list
 
 ### Example Oscillator
 ```bash
-% php app.php 3
 Initial State:
 00000
-0###0
+01110
 00000
 00000
 00000
 --
 Step 1:
-00#00
-00#00
-00#00
+00100
+00100
+00100
 00000
 00000
 --
 Step 2:
 00000
-0###0
+01110
 00000
 00000
 00000
 --
 Step 3:
-00#00
-00#00
-00#00
+00100
+00100
+00100
 00000
 00000
 ```
