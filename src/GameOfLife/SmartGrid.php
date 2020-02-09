@@ -119,17 +119,21 @@ class SmartGrid {
         return $neighbors;
     }
 
+    /**
+     * Performs a single step on the grid
+     */
     public function step() {
 
+        $potentials = $this->items;
+
         // use neighbors of live cells to identify potentials
-        $potentials = [];
         foreach(array_keys($this->items) as $key) {
             list($x, $y) = explode(".", $key);
             $neighbors = $this->getNeighbors($x, $y, false);
             $potentials = array_merge($potentials, $neighbors);
         }
 
-        // process the potentials for any changed
+        // process the potentials for any changes
         $commands = [];
         foreach($potentials as $key=>$value) {
             list($x, $y) = explode(".", $key);

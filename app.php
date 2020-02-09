@@ -8,21 +8,18 @@ $grid = new SmartGrid();
 
 $grid->addCell(1,1);
 $grid->addCell(1,2);
-$grid->addCell(1,3);
+$grid->addCell(2,2);
 
+$steps = 4;
+if(isset($argv[1])) {
+    $steps = $argv[1];
+}
+
+echo "Initial State:\n";
 $grid->dump(4, 4);
-$grid->step();
-
-$grid->dump(4, 4);
-$grid->step();
-
-$grid->dump(4, 4);
-$grid->step();
-
-$grid->dump(4, 4);
-$grid->step();
-
-$grid->dump(4, 4);
-$grid->step();
-
+for($i=0; $i<$steps; $i++) {
+    $grid->step();
+    echo "Step " . ($i+1) . ":\n";
+    $grid->dump(4, 4);
+}
 
