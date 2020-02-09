@@ -25,14 +25,18 @@ class SmartGrid {
         return $this->items;
     }
 
-    public function dump($X, $Y)
+    /**
+     * @param $X
+     * @param $Y
+     */
+    public function render($X, $Y)
     {
         for($i=0; $i<=$X; $i++)
         {
             for ($j = 0; $j <= $Y; $j++)
             {
                 if($this->hasCell($i, $j)) {
-                    echo "#";
+                    echo "1";
                 }
                 else {
                     echo "0";
@@ -46,8 +50,8 @@ class SmartGrid {
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param int $x
+     * @param int $y
      * @return bool
      */
     public function hasCell($x, $y) {
@@ -55,8 +59,8 @@ class SmartGrid {
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param int $x
+     * @param int $y
      * @return mixed
      */
     public function getCell($x, $y)
@@ -65,8 +69,8 @@ class SmartGrid {
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param int $x
+     * @param int $y
      * @param int $value
      */
     public function addCell($x, $y, $value = 1)
@@ -76,12 +80,15 @@ class SmartGrid {
             throw new \InvalidArgumentException("x and y must be greater than zero");
         }
 
+        // I'm being lazy here
+        // using a multi-dimension array would be better
+        // a flat array makes it easier to array_merge() later
         $this->items["{$x}.{$y}"] = $value;
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param int $x
+     * @param int $y
      */
     public function removeCell($x, $y)
     {
@@ -89,8 +96,9 @@ class SmartGrid {
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param int $x
+     * @param int $y
+     * @param bool $skipDead
      * @return array
      */
     public function getNeighbors($x, $y, $skipDead = true)
@@ -124,9 +132,10 @@ class SmartGrid {
      */
     public function step() {
 
+        // all live cells are potentials for changes
         $potentials = $this->items;
 
-        // use neighbors of live cells to identify potentials
+        // use neighbors of live cells to identify other potentials
         foreach(array_keys($this->items) as $key) {
             list($x, $y) = explode(".", $key);
             $neighbors = $this->getNeighbors($x, $y, false);
@@ -134,6 +143,8 @@ class SmartGrid {
         }
 
         // process the potentials for any changes
+        // we can't make the changes right away because it effects the current grid
+        // so we use a processing queue to do it later
         $commands = [];
         foreach($potentials as $key=>$value) {
             list($x, $y) = explode(".", $key);
@@ -153,6 +164,7 @@ class SmartGrid {
             }
         }
 
+        // process the command queue after all calculations are done
         foreach ($commands as $command) {
             call_user_func([$this, $command[0]], $command[1], $command[2]);
         }
