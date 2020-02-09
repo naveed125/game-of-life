@@ -8,7 +8,7 @@ $grid = new SmartGrid();
 
 $grid->addCell(1,1);
 $grid->addCell(1,2);
-$grid->addCell(2,2);
+$grid->addCell(1,3);
 
 $steps = 4;
 if(isset($argv[1])) {
