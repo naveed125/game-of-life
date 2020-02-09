@@ -32,7 +32,7 @@ class SmartGrid {
             for ($j = 0; $j <= $Y; $j++)
             {
                 if($this->hasCell($i, $j)) {
-                    echo "{$this->getCell($i, $j)}";
+                    echo "#";
                 }
                 else {
                     echo "0";
@@ -41,6 +41,8 @@ class SmartGrid {
 
             echo PHP_EOL;
         }
+
+        echo "--\n";
     }
 
     /**
@@ -49,7 +51,7 @@ class SmartGrid {
      * @return bool
      */
     public function hasCell($x, $y) {
-        return isset($this->items[$x][$y]);
+        return isset($this->items["{$x}.{$y}"]);
     }
 
     /**
@@ -59,7 +61,7 @@ class SmartGrid {
      */
     public function getCell($x, $y)
     {
-        return $this->items[$x][$y];
+        return $this->items["{$x}.{$y}"];
     }
 
     /**
@@ -74,7 +76,7 @@ class SmartGrid {
             throw new \InvalidArgumentException("x and y must be greater than zero");
         }
 
-        $this->items[$x][$y] = $value;
+        $this->items["{$x}.{$y}"] = $value;
     }
 
     /**
@@ -83,7 +85,7 @@ class SmartGrid {
      */
     public function removeCell($x, $y)
     {
-        unset($this->items[$x][$y]);
+        unset($this->items["{$x}.{$y}"]);
     }
 
     /**
@@ -103,11 +105,11 @@ class SmartGrid {
                 if(!($nx == $x && $ny == $y) && ($nx > -1 && $ny > -1))
                 {
                     if($this->hasCell($nx, $ny)) {
-                        $neighbors[$nx][$ny] = $this->getCell($nx, $ny);
+                        $neighbors["{$nx}.{$ny}"] = $this->getCell($nx, $ny);
                     }
                     else {
                         if(!$skipDead) {
-                            $neighbors[$nx][$ny] = 0;
+                            $neighbors["{$nx}.{$ny}"] = 0;
                         }
                     }
                 }
@@ -115,5 +117,41 @@ class SmartGrid {
         }
 
         return $neighbors;
+    }
+
+    public function step() {
+
+        // use neighbors of live cells to identify potentials
+        $potentials = [];
+        foreach(array_keys($this->items) as $key) {
+            list($x, $y) = explode(".", $key);
+            $neighbors = $this->getNeighbors($x, $y, false);
+            $potentials = array_merge($potentials, $neighbors);
+        }
+
+        // process the potentials for any changed
+        $commands = [];
+        foreach($potentials as $key=>$value) {
+            list($x, $y) = explode(".", $key);
+            $neighbors = $this->getNeighbors($x, $y);
+
+            // a dead cell becomes alive if it has exactly 3 neighbors
+            if( ! $this->hasCell($x, $y)) {
+                if(count($neighbors) == 3) {
+                    $commands[] = ['addCell', $x, $y];
+                }
+            }
+            else {
+                // alive cell dies if it has less than 2 or more than 3
+                if(count($neighbors) < 2 || count($neighbors) > 3) {
+                    $commands[] = ['removeCell', $x, $y];
+                }
+            }
+        }
+
+        foreach ($commands as $command) {
+            call_user_func([$this, $command[0]], $command[1], $command[2]);
+        }
+
     }
 }

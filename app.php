@@ -6,9 +6,23 @@ use GameOfLife\SmartGrid;
 
 $grid = new SmartGrid();
 
-$grid->addCell(0,1);
+$grid->addCell(1,1);
 $grid->addCell(1,2);
-$grid->addCell(2,2);
+$grid->addCell(1,3);
 
-$grid->dump(3, 3);
+$grid->dump(4, 4);
+$grid->step();
+
+$grid->dump(4, 4);
+$grid->step();
+
+$grid->dump(4, 4);
+$grid->step();
+
+$grid->dump(4, 4);
+$grid->step();
+
+$grid->dump(4, 4);
+$grid->step();
+
 
